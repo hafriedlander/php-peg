@@ -9,10 +9,10 @@ and lexing in a single top down grammar. For a basic overview of the subject, se
 - Compile the parser. php ./cli.php ExampleParser.peg.inc > ExampleParser.php 
 - Use the parser (you can also include code to do this in the input parser - again see the examples directory):
 
-<code>
+<pre><code>
 	$x = new ExampleParser( 'string to parse' ) ;
 	$res = $x->match_Expr() ;
-</code>
+</pre>
 
 ### Parser Format
 
@@ -52,6 +52,7 @@ Tokens may be
  - regexs, surrounded by / pairs.
  - expressions - single words (match \w+) starting with $ or more complex surrounded by ${ } which call a user defined function to perform the match
 
+
 ##### Regular expression tokens
 
 Automatically anchored to the current string start - do not include a string start anchor (^) anywhere.
@@ -70,20 +71,20 @@ Tried in this order
 
 - against current result
 - against containing expression stack in order (for sub-expressions only)
- - against parser instance as variable
- - against parser instance as rule-attached method INCLUDING $ ( i.e. function $foo() )
- - against parser instance as method INCLUDING $
- - as global method
+ + against parser instance as variable
+ + against parser instance as rule-attached method INCLUDING $ ( i.e. function $foo() )
+ + against parser instance as method INCLUDING $
+ + as global method
 - as constant
 
 ##### Tricks and traps
 
 Be careful against matching against results
 
-<code>
+<pre><code>
 	quoted_good: q:/['"]/ string "$q"
 	quoted_bad:  q:/['"]/ string $q
-</code>
+</pre>
 
 "$q" matches against the value of q again. $q simply returns the value of q, without doing any matching
 
@@ -91,22 +92,22 @@ Be careful against matching against results
 
 Tokens and groups can be given names by prepending name and ':', e.g.,
 
-<code>
+<pre><code>
 	rulea: "'" name:( tokena tokenb )* "'"
-</code>
+</pre>
 
 There must be no space betweeen the name and the ':'
 
-<code>
+<pre><code>
 	badrule: "'" name : ( tokena tokenb )* "'"
-</code>
+</pre>
 
 Recursive matchers can be given a name the same as their rule name by prepending with just a ':'. These next two rules are equivilent
 
-<code>
+<pre><code>
 	rulea: tokena tokenb:tokenb
 	rulea: tokena :tokenb
-</code>
+</pre>
 
 ### Rule-attached functions
 
@@ -120,7 +121,7 @@ All functions that are not in-grammar must have PHP compatible names  (see PHP n
 
 All these definitions define the same rule-attached function
 
-<code>
+<pre><code>
 	class A extends Parser {
 	/**Parser
 	foo: bar baz
@@ -133,18 +134,18 @@ All these definitions define the same rule-attached function
 	class B extends A {
 	  function foo_bar() {}
 	}
-</code>
+</pre>
 
 ### PHP name mapping
 
 Rules in the grammar map to php functions named match_{$rulename}. However rule names can contain characters that php functions can't.
 These characters are remapped:
 
-<code>
+<pre><code>
 	'-' => '_'
 	'$' => 'DLR'
 	'*' => 'STR'
-</code>
+</pre>
 
 Other dis-allowed characters are removed.
 
@@ -162,17 +163,17 @@ and the sub-match - in this case the default storage action will not occur.
 
 If you specify a rule-attached function for a recursive match, you do not need to name that token at all - it will be call automatically. E.g.
 
-<code>
+<pre><code>
 	rulea: tokena tokenb
 	  function tokenb ( &$res, $sub ) { print 'Will be called, even though tokenb is not named or marked with a :' ; }
-</code>
+</pre>
 
 You can also specify a rule-attached function called *, which will be called with every recursive match made
 
-<code>
+<pre><code>
 	rulea: tokena tokenb
 	  function * ( &$res, $sub ) { print 'Will be called for both tokena and tokenb' ; }
-</code>
+</pre>
 
 ### Silent matches
 
