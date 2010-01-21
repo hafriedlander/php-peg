@@ -1,11 +1,11 @@
 = PHP PEG - A PEG compiler for parsing text in PHP
 
-This is a Paring Expression Grammer compiler for PHP. PEG parsers are an alternative to other CFG grammers that includes both tokenization 
-and lexing in a single top down grammer. For a basic overview of the subject, see http://en.wikipedia.org/wiki/Parsing_expression_grammar
+This is a Paring Expression Grammar compiler for PHP. PEG parsers are an alternative to other CFG grammars that includes both tokenization 
+and lexing in a single top down grammar. For a basic overview of the subject, see http://en.wikipedia.org/wiki/Parsing_expression_grammar
 
 == Quick start
 
-- Write a parser. A parser is a PHP class with a grammer contained within it in a special syntax. The filetype is .peg.inc. See the examples directory.
+- Write a parser. A parser is a PHP class with a grammar contained within it in a special syntax. The filetype is .peg.inc. See the examples directory.
 - Compile the parser. php ./cli.php ExampleParser.peg.inc > ExampleParser.php 
 - Use the parser (you can also include code to do this in the input parser - again see the examples directory):
 
@@ -47,7 +47,7 @@ But with these extensions:
 
 Tokens may be
 
- - bare-words, which are recursive matchers - references to token rules defined elsewhere in the grammer,
+ - bare-words, which are recursive matchers - references to token rules defined elsewhere in the grammar,
  - literals, surrounded by " or ' quote pairs. No escaping support is provided in literals.
  - regexs, surrounded by / pairs.
  - expressions - single words (match \w+) starting with $ or more complex surrounded by ${ } which call a user defined function to perform the match
