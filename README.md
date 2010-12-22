@@ -1,18 +1,18 @@
 # PHP PEG - A PEG compiler for parsing text in PHP
 
-This is a Paring Expression Grammar compiler for PHP. PEG parsers are an alternative to other CFG grammars that includes both tokenization 
+This is a Parsing Expression Grammar compiler for PHP. PEG parsers are an alternative to other CFG grammars that includes both tokenization
 and lexing in a single top down grammar. For a basic overview of the subject, see http://en.wikipedia.org/wiki/Parsing_expression_grammar
 
 ## Quick start
 
-- Write a parser. A parser is a PHP class with a grammar contained within it in a special syntax. The filetype is .peg.inc. See the examples directory.
-- Compile the parser. php ./cli.php ExampleParser.peg.inc > ExampleParser.php 
-- Use the parser (you can also include code to do this in the input parser - again see the examples directory):
+* Write a parser. A parser is a PHP class with a grammar contained within it in a special syntax. The filetype is .peg.inc. See the examples directory.
+* Compile the parser. php ./cli.php ExampleParser.peg.inc > ExampleParser.php
+* Use the parser (you can also include code to do this in the input parser - again see the examples directory):
 
-<pre><code>
+<pre>
 	$x = new ExampleParser( 'string to parse' ) ;
 	$res = $x->match_Expr() ;
-</code></pre>
+</pre>
 
 ### Parser Format
 
@@ -38,14 +38,14 @@ PEG matching rules try to follow standard PEG format, summarised thusly:
 	!token - Token is not present next (but not consumed by parse)
 
  	( expression ) - Grouping for priority
-</code></pre>
+</pre>
 
 But with these extensions:
 
 <pre>
 	< or > - Optionally match whitespace
 	[ or ] - Require some whitespace
-</code></pre>
+</pre>
 
 ### Tokens
 
@@ -72,22 +72,22 @@ rule-attached functions and a variety of other functions and constants.
 
 Tried in this order
 
-- against current result
-- against containing expression stack in order (for sub-expressions only)
-	- against parser instance as variable
-	- against parser instance as rule-attached method INCLUDING `$` ( i.e. `function $foo()` )
-	- against parser instance as method INCLUDING `$`
-	- as global method
-- as constant
+* against current result
+* against containing expression stack in order (for sub-expressions only)
+    * against parser instance as variable
+    * against parser instance as rule-attached method INCLUDING `$` ( i.e. `function $foo()` )
+    * against parser instance as method INCLUDING `$`
+    * as global method
+* as constant
 
 ##### Tricks and traps
 
 Be careful against matching against results
 
-<pre><code>
+<pre>
 	quoted_good: q:/['"]/ string "$q"
 	quoted_bad:  q:/['"]/ string $q
-</code></pre>
+</pre>
 
 `"$q"` matches against the value of q again. `$q` simply returns the value of q, without doing any matching
 
@@ -95,22 +95,22 @@ Be careful against matching against results
 
 Tokens and groups can be given names by prepending name and `:`, e.g.,
 
-<pre><code>
+<pre>
 	rulea: "'" name:( tokena tokenb )* "'"
-</code></pre>
+</pre>
 
 There must be no space betweeen the name and the `:`
 
-<pre><code>
+<pre>
 	badrule: "'" name : ( tokena tokenb )* "'"
-</code></pre>
+</pre>
 
 Recursive matchers can be given a name the same as their rule name by prepending with just a `:`. These next two rules are equivilent
 
-<pre><code>
+<pre>
 	rulea: tokena tokenb:tokenb
 	rulea: tokena :tokenb
-</code></pre>
+</pre>
 
 ### Rule-attached functions
 
@@ -124,31 +124,31 @@ All functions that are not in-grammar must have PHP compatible names  (see PHP n
 
 All these definitions define the same rule-attached function
 
-<pre><code>
-	class A extends Parser {
-	/**Parser
-	foo: bar baz
-	  function bar() {}
-	* /
+<pre>
+    class A extends Parser {
+        /**Parser
+        foo: bar baz
+          function bar() {}
+        * /
 
-	  function foo_bar() {}
-	}
+        function foo_bar() {}
+    }
 
-	class B extends A {
-	  function foo_bar() {}
-	}
-</code></pre>
+    class B extends A {
+        function foo_bar() {}
+    }
+</pre>
 
 ### PHP name mapping
 
 Rules in the grammar map to php functions named `match_{$rulename}`. However rule names can contain characters that php functions can't.
 These characters are remapped:
 
-<pre><code>
+<pre>
 	'-' => '_'
 	'$' => 'DLR'
 	'*' => 'STR'
-</code></pre>
+</pre>
 
 Other dis-allowed characters are removed.
 
@@ -166,17 +166,17 @@ and the sub-match - in this case the default storage action will not occur.
 
 If you specify a rule-attached function for a recursive match, you do not need to name that token at all - it will be call automatically. E.g.
 
-<pre><code>
+<pre>
 	rulea: tokena tokenb
 	  function tokenb ( &$res, $sub ) { print 'Will be called, even though tokenb is not named or marked with a :' ; }
-</code></pre>
+</pre>
 
 You can also specify a rule-attached function called `*`, which will be called with every recursive match made
 
-<pre><code>
+<pre>
 	rulea: tokena tokenb
 	  function * ( &$res, $sub ) { print 'Will be called for both tokena and tokenb' ; }
-</code></pre>
+</pre>
 
 ### Silent matches
 
@@ -185,10 +185,10 @@ doesn't affect the other result properties that named rules' add.
 
 ## TODO
 
-- Allow configuration of whitespace - specify what matches, and wether it should be injected into results as-is, collapsed, or not at all
-- Allow inline-ing of rules into other rules for speed
-- More optimisation
-- Make Parser-parser be self-generated, instead of a bad hand rolled parser like it is now.
-- Slighly more powerfull expressions: `${parent.q}`, `${foo()->bar}`, etc.
-- Need to properly escape all literals. Expressions currently need to be in '', not ""
-- PHP token parser, and other token streams, instead of strings only like now
+* Allow configuration of whitespace - specify what matches, and wether it should be injected into results as-is, collapsed, or not at all
+* Allow inline-ing of rules into other rules for speed
+* More optimisation
+* Make Parser-parser be self-generated, instead of a bad hand rolled parser like it is now.
+* Slighly more powerfull expressions: `${parent.q}`, `${foo()->bar}`, etc.
+* Need to properly escape all literals. Expressions currently need to be in '', not ""
+* PHP token parser, and other token streams, instead of strings only like now
