@@ -351,7 +351,7 @@ class TokenRecurse extends Token {
 		$function = $this->function_name( $this->value ) ;
 		$storetag = $this->function_name( $this->tag ? $this->tag : $this->value ) ;
 
-		if ( FALSE ) {
+		if ( ParserCompiler::$debug ) {
 			$debug_header = PHPBuilder::build()
 				->l(
 				'$indent = str_repeat( " ", $this->depth );',
@@ -694,6 +694,8 @@ class Rule extends PHPWriter {
 
 class ParserCompiler {
 
+	static $debug = false;
+
 	static $currentClass = null;
 
 	static function create_parser( $match ) {
@@ -710,6 +712,26 @@ class ParserCompiler {
 		
 		/* Get the actual body of the parser rule set */
 		$rulestr = $match[3] ;
+		
+		/* Check for pragmas */
+		if (strpos($class, '!') === 0) {
+			switch ($class) {
+				case '!silent':
+					// NOP - dont output
+					return '';
+				case '!insert_autogen_warning':
+					return $ident . implode(PHP_EOL.$ident, array(
+						'/*',
+						'WARNING: This file has been machine generated. Do not edit it, or your changes will be overwritten next time it is compiled.',
+						'*/'
+					)) . PHP_EOL;
+				case '!debug':
+					self::$debug = true;
+					return '';
+			}
+			
+			throw new Exception("Unknown pragma $class encountered when compiling parser");
+		}
 		
 		$rules = array();
 
