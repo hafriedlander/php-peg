@@ -608,11 +608,11 @@ class Rule extends PHPWriter {
 
 					case '[':
 					case ']':
-						$tokens[] = new TokenWhitespace() ;
+						$tokens[] = new TokenWhitespace( FALSE ) ;
 						break ;
 					case '<':
 					case '>':
-						$tokens[] = $t = new TokenWhitespace( TRUE ) ;
+						$tokens[] = new TokenWhitespace( TRUE ) ;
 						break ;
 
 					case '(':
