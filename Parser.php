@@ -173,6 +173,15 @@ class Parser {
 		return $result ;
 	}
 
+	function finalise( $name, &$result ) {
+		$callback = array( $this, "{$name}__finalise" ) ;
+		if ( is_callable( $callback ) ) {
+			call_user_func_array( $callback, array( &$result ) ) ;
+		}
+
+		return $result ;
+	}
+
 	function store ( &$result, $subres, $storetag = NULL ) {
 		$result['text'] .= $subres['text'] ;
 

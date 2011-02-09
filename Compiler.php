@@ -672,7 +672,7 @@ class Rule extends PHPWriter {
 				'$result = $this->construct( "'.$function_name.'" );',
 				'$substack = array();',
 				$this->parsed->compile()->replace(array(
-					'MATCH' => 'return $result ;',
+					'MATCH' => 'return $this->finalise( "'.$function_name.'", $result );',
 					'FAIL' => 'return FALSE;'
 				))
 			);
