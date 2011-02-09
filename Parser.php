@@ -65,7 +65,7 @@ class ParserExpression {
 class ParserRegexp {
 	function __construct( $parser, $rx ) {
 		$this->parser = $parser ;
-		$this->rx = $rx . 'S' ;
+		$this->rx = $rx . 'Sx' ;
 
 		$this->matches = NULL ;
 		$this->match_pos = NULL ; // NULL is no-match-to-end-of-string, unless check_pos also == NULL, in which case means undefined
