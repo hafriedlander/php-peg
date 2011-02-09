@@ -8,7 +8,7 @@ require '../Parser.php';
  */
 class Rfc822 extends Parser {
 
-/*Parser:Rfc822
+/*!* Rfc822
 
 crlf: /\r\n/
 

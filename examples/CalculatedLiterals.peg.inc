@@ -4,7 +4,7 @@ require '../Parser.php' ;
 
 class CalculatedLiterals extends Parser {
 
-/*Parser:CalculatedLiterals
+/*!* CalculatedLiterals
 
 string: ( /\\./ | /[^${parent.q}]/ )*
 

@@ -8,7 +8,7 @@ require 'Rfc822.php';
  */
 class Rfc822UTF8 extends Rfc822 {
 
-/*Parser:Rfc822UTF8
+/*!* Rfc822UTF8
 
 crlf: /\r\n/u
 

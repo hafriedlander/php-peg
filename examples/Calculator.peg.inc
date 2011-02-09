@@ -4,7 +4,7 @@ require '../Parser.php' ;
 
 class Calculator extends Parser {
 
-/*Parser:Calculator
+/*!* Calculator
 
 Number: /[0-9]+/
 Value: Number > | '(' > Expr > ')' >

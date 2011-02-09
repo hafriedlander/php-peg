@@ -10,7 +10,7 @@ class EqualRepeat extends Packrat {
  * aabbacc - bad
  */
 
-/*Parser:Grammar1
+/*!* Grammar1
 A: "a" A? "b"
 B: "b" B? "c"
 T: !"b"
