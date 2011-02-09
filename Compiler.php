@@ -482,7 +482,8 @@ class Rule extends PHPWriter {
 	static $rule_rx = '@^[\x20\t]+(.*)@' ;
 	static $func_rx = '@^[\x20\t]+function\s+([^\s(]+)\s*\(([^)]*)\)@' ;
 
-	function __construct( $rules, $match ) {
+	function __construct( $indent, $rules, $match ) {
+		$this->indent = $indent;
 		$this->name = $match[1][0] ;
 		$this->rule = $match[2][0] ;
 		$this->functions = array() ;
@@ -493,18 +494,21 @@ class Rule extends PHPWriter {
 		$offset = $match[0][1] + strlen( $match[0][0] ) ;
 		$lines = preg_split( '/\r\n|\r|\n/', substr( $rules, $offset ) ) ;
 
+		$rule_rx = '@^'.preg_quote($indent).'[\x20\t]+(.*)@' ;
+		$func_rx = '@^'.preg_quote($indent).'[\x20\t]+function\s+([^\s(]+)\s*\(([^)]*)\)@' ;
+		
 		foreach( $lines as $line ) {
 			if ( !trim( $line ) ) continue ;
-			if ( !preg_match( self::$rule_rx, $line, $match ) ) break ;
+			if ( !preg_match( $rule_rx, $line, $match ) ) break ;
 
 			/* Handle function definitions */
-			if ( preg_match( self::$func_rx, $line, $func_match, 0 ) ) {
+			if ( preg_match( $func_rx, $line, $func_match, 0 ) ) {
 				$active_function = $func_match[1] ;
 				$this->functions[$active_function] = array( $func_match[2], "" ) ;
 			}
 			else {
 				if ( $active_function ) $this->functions[$active_function][1] .= $line . PHP_EOL ;
-				else                    $this->rule .= $line ;
+				else                    $this->rule .= PHP_EOL . trim($line) ;
 			}
 		}
 
@@ -684,29 +688,40 @@ class Rule extends PHPWriter {
 		}
 
 		// print_r( $match ) ; return '' ;
-		return $match->render() . PHP_EOL . PHP_EOL . implode( PHP_EOL, $functions ) ;
+		return $match->render(NULL, $this->indent) . PHP_EOL . PHP_EOL . implode( PHP_EOL, $functions ) ;
 	}
 }
 
 class ParserCompiler {
 
+	static $currentClass = null;
+
 	static function create_parser( $match ) {
-		static $rx = '@^([\w\-]+):(.*)$@m' ;
+		/* We allow indenting of the whole rule block, but only to the level of the comment start's indent */
+		$indent = $match[1];
+		
+		/* The regex to match a rule */
+		$rx = '@^'.preg_quote($indent).'([\w\-]+):(.*)$@m' ;
 
-		$class   = $match[1] ;
-		$rulestr = $match[2] ;
-
-		$rules = array() ;
+		/* Class isn't actually used ATM. Eventually it might be used for rule inlineing optimization */
+		if     ($class = trim($match[2])) self::$currentClass = $class;
+		elseif (self::$currentClass)      $class = self::$currentClass;
+		else                              $class = self::$currentClass = 'Anonymous Parser';
+		
+		/* Get the actual body of the parser rule set */
+		$rulestr = $match[3] ;
+		
+		$rules = array();
 
 		preg_match_all( $rx, $rulestr, $matches, PREG_SET_ORDER | PREG_OFFSET_CAPTURE ) ;
 		foreach ( $matches as $match ) {
-			$rules[] = new Rule( $rulestr, $match ) ;
+			$rules[] = new Rule( $indent, $rulestr, $match ) ;
 		}
 
 		$out = array() ;
 
 		foreach ( $rules as $rule ) {
-			$out[] = '/* ' . $rule->name . ':' . $rule->rule . ' */' . PHP_EOL ;
+			$out[] = $indent . '/* ' . $rule->name . ':' . $rule->rule . ' */' . PHP_EOL ;
 			$out[] = $rule->compile() ;
 			$out[] = PHP_EOL ;
 		}
@@ -716,9 +731,9 @@ class ParserCompiler {
 
 	static function compile( $string ) {
 		static $rx = '@
-			^/\*Parser:(.*?)$
-			((?:.|\r|\n)*?)
-			^\*/$
+			^([\x20\t]*)/\*!\* (?:[\x20\t]*(!?\w*))?   # Start with some indent, a comment with the special marker, then an optional name
+			((?:[^*]|\*[^/])*)                         # Any amount of "a character that isnt a star, or a star not followed by a /
+			\*/                                        # The comment end
 		@mx';
 
 		return preg_replace_callback( $rx, array( 'ParserCompiler', 'create_parser' ), $string ) ;
