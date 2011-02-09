@@ -380,7 +380,7 @@ class TokenRecurse extends Token {
 		return PHPBuilder::build()->l(
 			$debug_header,
 			'$key = "'.$function.'"; $pos = $this->pos;', // :{$this->pos}";',
-			'$subres = ( $this->packhas( $key, $pos ) ? $this->packread( $key, $pos ) : $this->packwrite( $key, $pos, $this->match_'.$function.'() ) );',
+			'$subres = ( $this->packhas( $key, $pos ) ? $this->packread( $key, $pos ) : $this->packwrite( $key, $pos, $this->match_'.$function.'(array_merge($substack, array($result))) ) );',
 			$this->match_fail_conditional( '$subres !== FALSE',
 				PHPBuilder::build()->l(
 					$debug_match,
@@ -658,9 +658,8 @@ class Rule extends PHPWriter {
 		$match = PHPBuilder::build() ;
 
 		if ( $this->parsed instanceof TokenRegex ) {
-			$match->b( "function match_{$function_name} ()",
+			$match->b( "function match_{$function_name} (\$substack = array())",
 				'$result = array("name"=>"'.$function_name.'", "text"=>"");',
-				'$substack = array();',
 				$this->parsed->compile()->replace(array(
 					'MATCH' => 'return $result;',
 					'FAIL' => 'return FALSE;'
@@ -668,9 +667,8 @@ class Rule extends PHPWriter {
 			);
 		}
 		else {
-			$match->b( "function match_{$function_name} ()",
+			$match->b( "function match_{$function_name} (\$substack = array())",
 				'$result = $this->construct( "'.$function_name.'" );',
-				'$substack = array();',
 				$this->parsed->compile()->replace(array(
 					'MATCH' => 'return $this->finalise( "'.$function_name.'", $result );',
 					'FAIL' => 'return FALSE;'
