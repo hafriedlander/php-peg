@@ -1,5 +1,5 @@
 {
-    "name":         "php-peg",
+    "name":         "hafriedlander/php-peg",
     "description":  "PEG (parsing expression grammar) compiler for PHP",
     "keywords":     ["PEG", "parser", "DSL", "compiler"],
     "homepage":     "https://github.com/hafriedlander/php-peg",
@@ -14,5 +14,7 @@
     ],
     "require": {
         "php":             ">=5.2.0"
-    }
+    },
+    "version" :     "1.0.0",
+    "bin":          ["cli.php"]
 }
