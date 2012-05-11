@@ -1,0 +1,18 @@
+{
+    "name":         "php-peg",
+    "description":  "PEG (parsing expression grammar) compiler for PHP",
+    "keywords":     ["PEG", "parser", "DSL", "compiler"],
+    "homepage":     "https://github.com/hafriedlander/php-peg",
+    "type":         "library",
+    "license":      ["MIT", "GPLv2", "BSD-3"],
+    "authors":      [
+        {
+            "name":      "Hamish Friedlander",
+            "email":     "hamish@silverstripe.com",
+            "role":      "Developer"
+        }
+    ],
+    "require": {
+        "php":             ">=5.2.0"
+    }
+}
