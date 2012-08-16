@@ -119,11 +119,11 @@ class PHPWriter {
  *
  */
 abstract class Token extends PHPWriter {
-	public $optional = FALSE ;
-	public $zero_or_more = FALSE ;
-	public $one_or_more = FALSE ;
+  public $quantifier = NULL;
+
 	public $positive_lookahead = FALSE ;
-	public $negative_lookahead = FALSE ;
+  public $negative_lookahead = FALSE ;
+
 	public $silent = FALSE ;
 
 	public $tag = FALSE ;
@@ -143,48 +143,22 @@ abstract class Token extends PHPWriter {
 
 		$id = $this->varid() ;
 
-		if ( $this->optional ) {
-			$code = PHPBuilder::build()
-				->l(
-				$this->save($id),
-				$code->replace( array( 'FAIL' => $this->restore($id,true) ))
-				);
-		}
-
-		if ( $this->zero_or_more ) {
-			$code = PHPBuilder::build()
-				->b( 'while (true)',
-					$this->save($id),
-					$code->replace( array(
-						'MATCH' => NULL,
-						'FAIL' =>
-							$this->restore($id,true)
-							->l( 'break;' )
-					))
-				)
-				->l(
-				'MATCH'
-				);
-		}
-
-		if ( $this->one_or_more ) {
-			$code = PHPBuilder::build()
-				->l(
-				'$count = 0;'
-				)
-				->b( 'while (true)',
-					$this->save($id),
-					$code->replace( array(
-						'MATCH' => NULL,
-						'FAIL' =>
-							$this->restore($id,true)
-							->l( 'break;' )
-					)),
-					'$count += 1;'
-				)
-				->b( 'if ($count > 0)', 'MATCH' )
-				->b( 'else',            'FAIL' );
-		}
+    if ($this->quantifier) {
+      $q = $this->quantifier;
+      if (0 === $q['min'] && 1 === $q['max']) {
+        // optional: ? || {0,1}
+        $code = $this->optional($code, $id);
+      } else if (0 === $q['min'] && null === $q['max']) {
+        // zero or more: * || {0,}
+        $code = $this->zero_or_more($code, $id);
+      } else if (null === $q['max']) {
+        // n or more: + || {n,}
+        $code = $this->n_or_more($code, $id, $q['min']);
+      } else {
+        // {n,x}
+        $code = $this->n_to_x($code, $id, $q['min'], $q['max']);
+      }
+    }
 
 		if ( $this->positive_lookahead ) {
 			$code = PHPBuilder::build()
@@ -235,6 +209,71 @@ abstract class Token extends PHPWriter {
 
 		return $code ;
 	}
+
+  protected function optional($code, $id)
+  {
+    return Builder::build()->l(
+      $this->save($id),
+      $code->replace(array('FAIL' => $this->restore($id,true)))
+    );
+  }
+
+  protected function zero_or_more($code, $id)
+  {
+    return Builder::build()->b(
+      'while (true)',
+      $this->save($id),
+      $code->replace(array(
+        'MATCH' => NULL,
+        'FAIL' => $this->restore($id, true)->l('break;')
+      ))
+    )->l('MATCH');
+  }
+
+  protected function n_or_more($code, $id, $n)
+  {
+    return Builder::build()->l(
+      '$count = 0;'
+    )->b(
+      'while (true)',
+      $this->save($id),
+      $code->replace(array(
+        'MATCH' => NULL,
+        'FAIL' => $this->restore($id, true)->l('break;')
+      )),
+      '$count++;'
+    )->b(
+      'if ($count >= '.$n.')',
+      'MATCH'
+    )->b(
+      'else',
+      'FAIL'
+    );
+  }
+
+  protected function n_to_x($code, $id, $min, $max)
+  {
+    if(1 === $min && 1 === $max) return $code;
+
+    return Builder::build()->l(
+      '$count = 0;'
+    )->b(
+      'while ($count < '.$max.')',
+      $this->save($id),
+      $code->replace(array(
+        'MATCH' => NULL,
+        'FAIL' => $this->restore($id, true)->l('break;')
+      )),
+      '$count++;'
+    )->b(
+      'if ($count >= '.$min.')',
+      'MATCH'
+    )->b(
+      'else',
+      'FAIL'
+    );
+
+  }
 	
 }
 
@@ -589,55 +628,59 @@ class Rule extends PHPWriter {
 		
 	}
 
-	static $rx_rx = '{^/(
+	static $rx_rx = '{\G/(
 		((\\\\\\\\)*\\\\/) # Escaped \/, making sure to catch all the \\ first, so that we dont think \\/ is an escaped /
 		|
 		[^/]               # Anything except /
 	)*/}xu' ;
 
 	function tokenize( $str, &$tokens, $o = 0 ) {
-
+    $length = strlen($str);
 		$pending = new Pending() ;
 
-		while ( $o < strlen( $str ) ) {
-			$sub = substr( $str, $o ) ;
+		while ( $o < $length ) {
 
 			/* Absorb white-space */
-			if ( preg_match( '/^\s+/', $sub, $match ) ) {
+			if ( preg_match( '/\G\s+/', $str, $match, 0, $o ) ) {
 				$o += strlen( $match[0] ) ;
 			}
 			/* Handle expression labels */
-			elseif ( preg_match( '/^(\w*):/', $sub, $match ) ) {
+			elseif ( preg_match( '/\G(\w*):/', $str, $match, 0, $o ) ) {
 				$pending->set( 'tag', isset( $match[1] ) ? $match[1] : '' ) ;
 				$o += strlen( $match[0] ) ;
 			}
 			/* Handle descent token */
-			elseif ( preg_match( '/^[\w-]+/', $sub, $match ) ) {
-				$tokens[] = $t = new TokenRecurse( $match[0] ) ; $pending->apply_if_present( $t ) ;
+			elseif ( preg_match( '/\G[\w-]+/', $str, $match, 0, $o ) ) {
+        $tokens[] = $t = new TokenRecurse( $match[0] ) ;
+        $pending->apply_if_present( $t ) ;
 				$o += strlen( $match[0] ) ;
 			}
 			/* Handle " quoted literals */
-			elseif ( preg_match( '/^"[^"]*"/', $sub, $match ) ) {
-				$tokens[] = $t = new TokenLiteral( $match[0] ) ; $pending->apply_if_present( $t ) ;
+			elseif ( preg_match( '/\G"[^"]*"/', $str, $match, 0, $o ) ) {
+        $tokens[] = $t = new TokenLiteral( $match[0] ) ;
+        $pending->apply_if_present( $t ) ;
 				$o += strlen( $match[0] ) ;
 			}
 			/* Handle ' quoted literals */
-			elseif ( preg_match( "/^'[^']*'/", $sub, $match ) ) {
-				$tokens[] = $t = new TokenLiteral( $match[0] ) ; $pending->apply_if_present( $t ) ;
+			elseif ( preg_match( "/\G'[^']*'/", $str, $match, 0, $o ) ) {
+        $tokens[] = $t = new TokenLiteral( $match[0] ) ;
+        $pending->apply_if_present( $t ) ;
 				$o += strlen( $match[0] ) ;
 			}
 			/* Handle regexs */
-			elseif ( preg_match( self::$rx_rx, $sub, $match ) ) {
-				$tokens[] = $t = new TokenRegex( $match[0] ) ; $pending->apply_if_present( $t ) ;
+			elseif ( preg_match( self::$rx_rx, $str, $match, 0, $o ) ) {
+        $tokens[] = $t = new TokenRegex( $match[0] ) ;
+        $pending->apply_if_present( $t ) ;
 				$o += strlen( $match[0] ) ;
 			}
 			/* Handle $ call literals */
-			elseif ( preg_match( '/^\$(\w+)/', $sub, $match ) ) {
-				$tokens[] = $t = new TokenExpressionedRecurse( $match[1] ) ; $pending->apply_if_present( $t ) ;
+			elseif ( preg_match( '/\G\$(\w+)/', $str, $match, 0, $o ) ) {
+        $tokens[] = $t = new TokenExpressionedRecurse( $match[1] ) ;
+        $pending->apply_if_present( $t ) ;
 				$o += strlen( $match[0] ) ;
 			}
 			/* Handle flags */
-			elseif ( preg_match( '/^\@(\w+)/', $sub, $match ) ) {
+			elseif ( preg_match( '/\G\@(\w+)/', $str, $match, 0, $o ) ) {
 				$l = count( $tokens ) - 1 ;
 				$o += strlen( $match[0] ) ;
 				user_error( "TODO: Flags not currently supported", E_USER_WARNING ) ;
@@ -648,16 +691,30 @@ class Rule extends PHPWriter {
 				$l = count( $tokens ) - 1 ;
 				$o += 1 ;
 				switch( $c ) {
-					case '?':
-						$tokens[$l]->optional = TRUE ;
+          case '?':
+            $tokens[$l]->quantifier = array('min' => 0, 'max' => 1);
 						break ;
-					case '*':
-						$tokens[$l]->zero_or_more = TRUE ;
+          case '*':
+            $tokens[$l]->quantifier = array('min' => 0, 'max' => null);
 						break ;
 					case '+':
-						$tokens[$l]->one_or_more = TRUE ;
+            $tokens[$l]->quantifier = array('min' => 1, 'max' => null);
 						break ;
-
+          case '{':
+            if (preg_match('/\G\{([0-9]+)(,([0-9]*))?\}/', $str, $matches, 0, $o - 1)) {
+              $min = $max = (int) $matches[1];
+              if(isset($matches[2])) {
+                $max = $matches[3] ? (int) $matches[3] : null;
+              }
+              $tokens[$l]->quantifier = array('min' => $min, 'max' => $max);
+              $o += strlen($matches[0]) - 1;
+            } else {
+              throw new \Exception(sprintf(
+                "Unknown quantifier: %s",
+                substr($str, $o, 10)
+              ));
+            }
+            break;
 					case '&':
 						$pending->set( 'positive_lookahead' ) ;
 						break ;
