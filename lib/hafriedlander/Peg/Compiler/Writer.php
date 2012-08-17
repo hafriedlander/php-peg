@@ -71,17 +71,17 @@ class Writer
 		$id = $this->varid();
 
 		return Builder::build()
-			->l('$'.$id.' = NULL;')
+			->l('$'.$id.' = null;')
       ->b(
         'do',
 				$code->replace(array(
-					'MBREAK' => '$'.$id.' = TRUE; break;',
-					'FBREAK' => '$'.$id.' = FALSE; break;'
+					'MBREAK' => '$'.$id.' = true; break;',
+					'FBREAK' => '$'.$id.' = false; break;'
 				))
 			)
       ->l('while(0);')
-			->b('if($'.$id.' === TRUE)', 'MATCH')
-			->b('if($'.$id.' === FALSE)', 'FAIL');
+			->b('if(true === $'.$id.')', 'MATCH')
+			->b('if(false === $'.$id.')', 'FAIL');
   }
 
 }
