@@ -688,7 +688,7 @@ class Rule extends PHPWriter {
 			}
 			/* Handle control tokens */
 			else {
-				$c = substr( $sub, 0, 1 ) ;
+				$c = substr( $str, $o, 1 ) ;
 				$l = count( $tokens ) - 1 ;
 				$o += 1 ;
 				switch( $c ) {
