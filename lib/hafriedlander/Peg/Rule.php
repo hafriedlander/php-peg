@@ -20,7 +20,7 @@ class Rule extends Writer
 {
 	const RULE_RX = '@
 	  (?<name> [\w-]+)                      # The name of the rule
-	  (\s+ extends \s+ (?<extends>\w+))?    # The extends word
+	  (\s+ extends \s+ (?<extends>[\w-]+))? # The extends word
 	  (\s* \((?<arguments>.*) \))?          # Any variable setters
 	  (
 		  \s*(?<matchmark>:) |                # Marks the matching rule start
