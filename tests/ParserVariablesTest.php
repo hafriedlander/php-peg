@@ -2,9 +2,10 @@
 
 require_once "ParserTestBase.php";
 
-class ParserVariablesTest extends ParserTestBase {
-	
-	public function testBasicLiteralVariables() {
+class ParserVariablesTest extends ParserTestBase
+{	
+  public function testBasicLiteralVariables()
+  {
 		$parser = $this->buildParser('
 			/*!* BasicVariables
 			Foo: Letter:"a" "$Letter"
@@ -20,7 +21,8 @@ class ParserVariablesTest extends ParserTestBase {
 		$parser->assertMatches('Qux', 'ddada');
 	}
 	
-	public function testRecurseOnVariables() {
+  public function testRecurseOnVariables()
+  {
 		$parser = $this->buildParser('
 			/*!* RecurseOnVariablesParser
 			A: "a"
@@ -37,7 +39,8 @@ class ParserVariablesTest extends ParserTestBase {
 		$parser->assertMatches('Baz', 'b');	$parser->assertDoesntMatch('Baz', 'a');
 	}
 	
-	public function testSetOnRuleVariables() {
+  public function testSetOnRuleVariables()
+  {
 		$parser = $this->buildParser('
 			/*!* SetOnRuleVariablesParser
 			A: "a"

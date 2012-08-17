@@ -1,8 +1,9 @@
 <?php
 
-require '../Parser.php' ;
+use hafriedlander\Peg\Parser;
 
-class CalculatedLiterals extends Parser {
+class CalculatedLiterals extends Parser
+{
 
 /*!* CalculatedLiterals
 

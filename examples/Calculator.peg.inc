@@ -1,8 +1,9 @@
 <?php
 
-require '../Parser.php' ;
+use hafriedlander\Peg\Parser;
 
-class Calculator extends Parser {
+class Calculator extends Parser
+{
 
 /*!* Calculator
 
@@ -49,15 +50,3 @@ Expr: Sum
 */
 
 }
-
-$x = new Calculator( '(2 + 4) * 3 - 10' ) ;
-$res = $x->match_Expr() ;
-if ( $res === FALSE ) {
-	print "No Match\n" ;
-}
-else {
-	print_r( $res ) ;
-}
-
-
-

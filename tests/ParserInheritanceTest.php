@@ -2,10 +2,10 @@
 
 require_once "ParserTestBase.php";
 
-class ParserInheritanceTest extends ParserTestBase {
-	
-	public function testBasicInheritance() {
-		
+class ParserInheritanceTest extends ParserTestBase
+{	
+  public function testBasicInheritance()
+  {		
 		$parser = $this->buildParser('
 			/*!* BasicInheritanceTestParser
 			Foo: "a"
@@ -20,9 +20,8 @@ class ParserInheritanceTest extends ParserTestBase {
 		$this->assertFalse($parser->matches('Bar', 'b'));
 	}
 
-	
-	public function testBasicInheritanceConstructFallback() {
-		
+  public function testBasicInheritanceConstructFallback()
+  {	
 		$parser = $this->buildParser('
 			/*!* BasicInheritanceConstructFallbackParser
 			Foo: "a"
@@ -58,8 +57,8 @@ class ParserInheritanceTest extends ParserTestBase {
 		
 	}
 
-	public function testBasicInheritanceStoreFallback() {
-		
+  public function testBasicInheritanceStoreFallback()
+  {	
 		$parser = $this->buildParser('
 			/*!* BasicInheritanceStoreFallbackParser
 			Foo: Pow:"a"
@@ -103,7 +102,8 @@ class ParserInheritanceTest extends ParserTestBase {
 		$this->assertArrayNotHasKey('testb', $res);
 	}
 
-	public function testInheritanceByReplacement() {
+  public function testInheritanceByReplacement()
+  {
 		$parser = $this->buildParser('
 			/*!* InheritanceByReplacementParser
 			A: "a"
@@ -118,6 +118,5 @@ class ParserInheritanceTest extends ParserTestBase {
 		$parser->assertMatches('Bar', 'aa');
 		$parser->assertMatches('Baz', 'b');
 	}
-	
 	
 }

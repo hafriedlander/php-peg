@@ -1,12 +1,13 @@
 <?php
 
-require 'Rfc822.php';
+use hafriedlander\Peg\Parser;
 
 /**
  * This parser extends the RFC822 standard to allow XML entities and UTF-8 characters in atoms and quoted-strings
  * @author Hamish Friedlander
  */
-class Rfc822UTF8 extends Rfc822 {
+class Rfc822UTF8 extends Rfc822
+{
 
 /*!* Rfc822UTF8
 
@@ -22,9 +23,3 @@ quoted-pair: /\\./u
 
 }
 
-/**
- * Some trial code. Remove soon
- */
-$p = new Rfc822UTF8( 'JØhn ByØrgsØn <byorn@again.com>, "アキラ" <akira@neotokyo.com>' ) ;
-print_r( $p->match_address_header() ) ;
- /* */

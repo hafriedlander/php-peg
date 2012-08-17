@@ -1,12 +1,13 @@
 <?php
 
-require '../Parser.php';
+use hafriedlander\Peg\Parser;
 
 /**
  * This parser strictly matches the RFC822 standard. No characters outside the ASCII range 0-127 are allowed
  * @author Hamish Friedlander
  */
-class Rfc822 extends Parser {
+class Rfc822 extends Parser
+{
 
 /*!* Rfc822
 
@@ -84,5 +85,3 @@ address-header: address (<","> address)*
 
 }
 
-$p = new Rfc822( 'John Byorgson <byorn@again.com>, "Akira \"Bad Boy\" Kenada" <akira@neotokyo.com>' ) ;
-print_r( $p->match_address_header() ) ;
