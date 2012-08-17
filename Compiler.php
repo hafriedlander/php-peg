@@ -616,17 +616,9 @@ class Rule extends PHPWriter {
 	/* Manual parsing, because we can't bootstrap ourselves yet */
 	function parse_rule() {
 		$rule = trim( $this->rule ) ;
-
-		/* If this is a regex end-token, just mark it and return */
-		if ( substr( $rule, 0, 1 ) == '/' ) {
-			$this->parsed = new TokenRegex( $rule ) ;
-		}
-		else {
-			$tokens = array() ;
-			$this->tokenize( $rule, $tokens ) ;
-			$this->parsed = ( count( $tokens ) == 1 ? array_pop( $tokens ) : new TokenSequence( $tokens ) ) ;
-		}
-		
+    $tokens = array() ;
+    $this->tokenize( $rule, $tokens ) ;
+    $this->parsed = ( 1 === count( $tokens ) ? array_pop( $tokens ) : new TokenSequence( $tokens ) ) ;
 	}
 
 	static $rx_rx = '@\G/(
