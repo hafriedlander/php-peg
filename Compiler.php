@@ -807,7 +807,7 @@ class Rule extends PHPWriter {
 		foreach( $this->functions as $name => $function ) {
 			$function_name = $this->function_name( preg_match( '/^_/', $name ) ? $this->name.$name : $this->name.'_'.$name ) ;
 			$functions[] = implode( PHP_EOL, array(
-				'function ' . $function_name . ' ' . $function
+				'public function ' . $function_name . ' ' . $function
 			));
 		}
 
