@@ -36,4 +36,14 @@ class ParserSyntaxTest extends ParserTestBase {
 		$parser->assertMatches('Foo-two', 'ba');
 	}
 
+	public function testComplexRulesCanStartWithARegex() {
+		$parser = $this->buildParser('
+			/*!* ComplexRulesCanStartWithARegex
+			Foo: /foo/ "bar"
+			*/
+		');
+
+		$parser->assertDoesntMatch('Foo', 'foo');
+		$parser->assertMatches('Foo', 'foobar');
+	}
 }
