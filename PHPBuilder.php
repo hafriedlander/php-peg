@@ -89,7 +89,7 @@ class PHPBuilder {
 						continue ;
 					}
 
-					throw 'Unknown type passed to PHPBuilder#replace' ;
+					throw new Exception('Unknown type passed to PHPBuilder#replace');
 				}
 			}
 

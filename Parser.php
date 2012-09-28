@@ -105,7 +105,7 @@ class Parser {
 	}
 
 	function packread( $key, $pos ) {
-		throw 'PackRead after PackHas=>false in Parser.php' ;
+		throw new Exception('PackRead after PackHas=>false in Parser.php');
 	}
 
 	function packwrite( $key, $pos, $res ) {
