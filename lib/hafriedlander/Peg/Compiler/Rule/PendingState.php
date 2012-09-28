@@ -3,7 +3,7 @@
 namespace hafriedlander\Peg\Compiler\Rule;
 
 /**
- * Handles storing of information for an expression that applys to the <i>next</i> token, and deletion of that
+ * Handles storing of information for an expression that applies to the <i>next</i> token, and deletion of that
  * information after applying
  *
  * @author Hamish Friedlander
