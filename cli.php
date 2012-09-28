@@ -1,5 +1,7 @@
 <?php
 
-require 'Compiler.php' ;
+require 'autoloader.php';
 
-ParserCompiler::cli( $_SERVER['argv'] ) ;
+use hafriedlander\Peg\Compiler;
+
+Compiler::cli( $_SERVER['argv'] ) ;

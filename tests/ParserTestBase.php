@@ -1,10 +1,8 @@
 <?php
 
+require_once dirname(__DIR__).'/autoloader.php';
 
-$base = dirname(dirname(__FILE__));
-
-include "$base/Compiler.php";
-include "$base/Parser.php";
+use hafriedlander\Peg;
 
 class ParserTestWrapper {
 	
@@ -41,7 +39,7 @@ class ParserTestBase extends PHPUnit_Framework_TestCase {
 		$class = 'Parser'.sha1($parser);
 		
 		// echo ParserCompiler::compile("class $class extends Parser {\n $parser\n}") . "\n\n\n";
-		eval(ParserCompiler::compile("class $class extends Parser {\n $parser\n}"));
+		eval(Peg\Compiler::compile("class $class extends hafriedlander\Peg\Parser\Basic {\n $parser\n}"));
 		return new ParserTestWrapper($this, $class);
 	}
 

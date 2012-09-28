@@ -1,5 +1,7 @@
 <?php
 
+namespace hafriedlander\Peg\Compiler;
+
 class PHPBuilder {
 
 	static function build () {

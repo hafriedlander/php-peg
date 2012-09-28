@@ -1,8 +1,9 @@
 <?php
 
-require '../Parser.php' ;
+require_once dirname(__DIR__).'/autoloader.php';
+use hafriedlander\Peg\Parser;
 
-class CalculatedLiterals extends Parser {
+class CalculatedLiterals extends Parser\Basic {
 
 /*!* CalculatedLiterals
 
