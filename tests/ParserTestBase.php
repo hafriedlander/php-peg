@@ -11,9 +11,17 @@ class ParserTestWrapper {
 		$this->class = $class;
 	}
 
+	function function_name( $str ) {
+		$str = preg_replace( '/-/', '_', $str ) ;
+		$str = preg_replace( '/\$/', 'DLR', $str ) ;
+		$str = preg_replace( '/\*/', 'STR', $str ) ;
+		$str = preg_replace( '/[^\w]+/', '', $str ) ;
+		return $str ;
+	}
+
 	function match($method, $string, $allowPartial = false){
 		$class = $this->class;
-		$func = 'match_'.$method;
+		$func = $this->function_name('match_'.$method);
 		
 		$parser = new $class($string);
 		$res = $parser->$func();
@@ -37,7 +45,7 @@ class ParserTestBase extends PHPUnit_Framework_TestCase {
 	
 	function buildParser($parser) {
 		$class = 'Parser'.sha1($parser);
-		
+
 		// echo ParserCompiler::compile("class $class extends Parser {\n $parser\n}") . "\n\n\n";
 		eval(Peg\Compiler::compile("class $class extends hafriedlander\Peg\Parser\Basic {\n $parser\n}"));
 		return new ParserTestWrapper($this, $class);

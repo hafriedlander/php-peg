@@ -12,12 +12,12 @@ namespace hafriedlander\Peg\Compiler;
 class Rule extends PHPWriter {
 
 	static $rule_rx = '@
-	(?<name> \w+)                         # The name of the rule
-	( \s+ extends \s+ (?<extends>\w+) )?  # The extends word
-	( \s* \( (?<arguments>.*) \) )?       # Any variable setters
+	(?<name> [\w-]+)                         # The name of the rule
+	( \s+ extends \s+ (?<extends>[\w-]+) )?  # The extends word
+	( \s* \( (?<arguments>.*) \) )?          # Any variable setters
 	(
-		\s*(?<matchmark>:) |               # Marks the matching rule start
-		\s*(?<replacemark>;) |             # Marks the replacing rule start
+		\s*(?<matchmark>:) |                  # Marks the matching rule start
+		\s*(?<replacemark>;) |                # Marks the replacing rule start
 		\s*$
 	)
 	(?<rule>[\s\S]*)
