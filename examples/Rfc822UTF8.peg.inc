@@ -12,7 +12,7 @@ class Rfc822UTF8 extends Rfc822 {
 
 crlf: /\r\n/u
 
-atom: /((&[A-Za-z]+;)|(&#(xX)?[A-Fa-f0-9]+;)|([^\x00-\x1F\x20()<>@,;:\\".\[\]]))+/u
+atom: /( (&[A-Za-z]+;) | (&\#(xX)?[A-Fa-f0-9]+;) | ([^\x00-\x1F\x20()<>@,;:\[\]\\".]) )+/u
 
 qtext-chars: /[^"\\\x0D]+/u
 
