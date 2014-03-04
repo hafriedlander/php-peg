@@ -289,7 +289,7 @@ class Rule extends PHPWriter {
 		}
 		else {
 			$arguments = "array(";
-			foreach ($this->arguments as $k=>$v) { $arguments .= "'$k' => '$v'"; }
+			foreach ($this->arguments as $k=>$v) { $arguments .= "'$k' => '$v', "; }
 			$arguments .= ")";
 		}
 
