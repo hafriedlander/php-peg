@@ -15,6 +15,7 @@ class ParserSyntaxTest extends ParserTestBase {
 			Qux:
 				"a"
 				"b"
+			Quux:	"a"
 			*/
 		');
 
@@ -22,6 +23,7 @@ class ParserSyntaxTest extends ParserTestBase {
 		$parser->assertMatches('Bar', 'ab');
 		$parser->assertMatches('Baz', 'ab');
 		$parser->assertMatches('Qux', 'ab');
+		$parser->assertMatches('Quux', 'a');
 	}
 
 	public function testRuleNamesCanContainHyphens() {
