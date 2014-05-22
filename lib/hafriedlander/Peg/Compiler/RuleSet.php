@@ -24,7 +24,7 @@ class RuleSet {
 			// Ignore blank lines
 			if (!trim($line)) continue;
 			// Ignore comments
-			if (preg_match('/^[\x20|\t]+#/', $line)) continue;
+			if (preg_match('/^[\x20\t]*#/', $line)) continue;
 
 			// Strip off indent
 			if (!empty($indent)) {
@@ -33,7 +33,7 @@ class RuleSet {
 			}
 
 			// Any indented line, add to current set of lines
-			if (preg_match('/^\x20|\t/', $line)) $block[] = $line;
+			if (preg_match('/^[\x20\t]/', $line)) $block[] = $line;
 
 			// Any non-indented line marks a new block. Add a rule for the current block, then start a new block
 			else {
