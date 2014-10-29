@@ -10,11 +10,20 @@
 			"name":      "Hamish Friedlander",
 			"email":     "hamish@silverstripe.com",
 			"role":      "Developer"
-		}
+		},
+        {
+            "name":      "Johannes Künsebeck",
+            "email":     "kuensebeck@googlemail.com",
+            "role":      "Developer"
+        }
 	],
 	"require": {
 		"php":             ">=5.3.0"
 	},
-	"version" :     "2.0.0",
+    "autoload": {
+        "psr-0": {
+            "hafriedlander\\Peg": "lib"
+        }
+    },
 	"bin":          ["cli.php"]
 }
