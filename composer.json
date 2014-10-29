@@ -4,7 +4,7 @@
 	"keywords":     ["PEG", "parser", "DSL", "compiler"],
 	"homepage":     "https://github.com/hafriedlander/php-peg",
 	"type":         "library",
-	"license":      ["MIT", "GPLv2", "BSD-3"],
+	"license":      ["MIT","GPL-2.0","BSD-3-Clause"],
 	"authors":      [
 		{
 			"name":      "Hamish Friedlander",
