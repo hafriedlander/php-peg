@@ -1,20 +1,38 @@
 {
-	"name":         "hafriedlander/php-peg",
-	"description":  "PEG (parsing expression grammar) compiler for PHP",
-	"keywords":     ["PEG", "parser", "DSL", "compiler"],
-	"homepage":     "https://github.com/hafriedlander/php-peg",
-	"type":         "library",
-	"license":      ["MIT", "GPLv2", "BSD-3"],
-	"authors":      [
-		{
-			"name":      "Hamish Friedlander",
-			"email":     "hamish@silverstripe.com",
-			"role":      "Developer"
-		}
-	],
-	"require": {
-		"php":             ">=5.3.0"
-	},
-	"version" :     "2.0.0",
-	"bin":          ["cli.php"]
+    "name": "hnesk/php-peg",
+    "description": "Minimally invasive fork of hafriedlander/php-peg with support for composer autoloading",
+    "keywords": [
+        "PEG",
+        "parser",
+        "DSL",
+        "compiler"
+    ],
+    "homepage": "https://github.com/hnesk/php-peg",
+    "type": "library",
+    "license": [
+        "MIT",
+        "GPL-2.0",
+        "BSD-3-Clause"
+    ],
+    "authors": [
+        {
+            "name": "Hamish Friedlander",
+            "email": "hamish@silverstripe.com",
+            "role": "Developer"
+        },
+        {
+            "name": "Johannes Künsebeck",
+            "email": "kuensebeck@googlemail.com",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "php": ">=5.3.0"
+    },
+    "autoload": {
+        "psr-0": {
+            "hafriedlander\\Peg": "lib"
+        }
+    },
+    "bin": ["cli.php"]
 }
