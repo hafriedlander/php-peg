@@ -135,7 +135,7 @@ class Rule extends PHPWriter {
 		((\\\\\\\\)*\\\\/) # Escaped \/, making sure to catch all the \\ first, so that we dont think \\/ is an escaped /
 		|
 		[^/]               # Anything except /
-	)*/@xu' ;
+	)*/\S*(?=\s|$)@xu' ;
 
 	function tokenize( $str, &$tokens, $o = 0 ) {
 		$length = strlen($str);
