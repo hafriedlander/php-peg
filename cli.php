@@ -1,4 +1,5 @@
 <?php
+ini_set("pcre.jit", "0");
 
 require 'autoloader.php';
 
