@@ -6,7 +6,9 @@ use hafriedlander\Peg\Compiler\PHPBuilder;
 
 class Literal extends Expressionable {
 	function __construct( $value ) {
-		parent::__construct( 'literal', "'" . substr($value,1,-1) . "'" );
+		// escape single quotes
+		$escaped_value = str_replace('\'', '\\\'', substr($value,1,-1));
+		parent::__construct( 'literal', "'" . $escaped_value . "'" );
 	}
 
 	function match_code( $value ) {
